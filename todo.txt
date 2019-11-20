@@ -11,3 +11,4 @@ BEFORE ROLLOUT
 * in upload_pic and load_user_pic adjust file to user pic
 * restrict user access to folders backend and frontend/content
 
+test
