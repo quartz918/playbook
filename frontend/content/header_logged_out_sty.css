@@ -1,0 +1,17 @@
+.header-wrapper {
+    overflow:hidden;
+    background-color: var(--header-footer-color);
+    padding: 1%;
+    height: 75px;
+    display: grid;
+    width: 100%;
+    grid-template-columns: 33% 33% 300px;
+    align-items: start;
+    justify-content: space-between;
+    z-index: 2001;
+
+}
+
+a {
+    color: var(--on-top-color);
+}

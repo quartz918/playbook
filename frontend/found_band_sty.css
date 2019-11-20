@@ -1,0 +1,15 @@
+.found-band-wrapper{
+    display: grid;
+    width: 100%;
+   
+    grid-template-columns: 50% 50% ;
+    align-items: start;
+    justify-content: space-between;
+}    
+
+.modal-dialog-band{
+    width: var(--std-width);
+    
+    margin: auto;
+    
+}

@@ -1,0 +1,72 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Nov 12, 2019, 1:23:18 PM
+    Author     : ulysses
+*/
+
+.signin-wrapper{
+    background-color: var(--header-footer-color);
+    position: relative;
+    min-height: 20em;
+    width: 30em;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5%;
+    border-radius: 10px;
+}
+
+.signin-title{
+    text-align: center;
+    padding: 1em;
+    color: var(--on-top-color);
+    font-size: 2em;
+}
+
+.signin-login-wrapper{
+    width: 100%;
+}
+
+.signin-user-name, .signin-password{
+    width: 100%;
+    padding: 12px;
+}
+
+input {
+    width: 100%;
+    height: 16px;
+}
+
+.signin-login-btn{
+  height:35px;
+  width: 7em;
+  
+  background-color: var(--on-top-color); 
+  border: none;
+  text-decoration: none;
+  text-align: center;
+  font-size: 1em;
+  color: var(--header-footer-color);
+  border-radius: 10px;
+  float: right;
+  margin-right: 12px;
+}
+
+.signin-login-btn:hover{
+   color: var(--on-top-color);
+   background-color: grey;
+}
+
+.signin-register{
+    position: absolute;
+    margin-top: 1em;
+    margin-left: 12px;
+}
+.signin-errors{
+    height: 3em;
+    color: var(--on-top-color);
+    margin-left: 12px;
+}

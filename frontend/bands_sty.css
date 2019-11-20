@@ -1,0 +1,67 @@
+.band-found{
+        text-align: right;
+}
+
+
+
+.content-band-header{
+    display: grid;
+    width: 100%;
+    height: var(--std-nav-height);
+    grid-template-columns: 50% 50% ;
+    align-items: start;
+    justify-content: space-between;
+    
+    background: #6b6b6b;
+    border-radius: 10px 10px 0px 0px;
+}
+
+.content-band-header-right{
+    display: grid;
+    width: 100%;
+    height: var(--std-nav-height);
+    grid-template-columns: 50% 50% ;
+    align-items: start;
+    justify-content: space-between;
+}
+
+.mod-found-band-content{
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 100%; /* Could be more or less, depending on screen size */
+  height: 100%;
+}
+
+
+.jujoin-btn{
+    background-color: var(--header-footer-color);
+    height: 1.5em;
+    width: 78px;
+    border: none;
+    border-radius: 10px;
+    padding-left: 12px;
+    padding-right: 12px;
+    display: inline-block;
+    text-decoration: none;
+    text-align: center;
+    font-size: 1em;
+    cursor:pointer;
+    color: var(--on-top-color);
+    justify-self: end;
+    
+}
+
+.jujoin-btn:hover{
+    background-color: var(--on-top-color);
+    border-radius: 10px;
+    color: var(--header-footer-color);
+    
+}
+
+.ju-band{
+ 
+    text-align: right;
+    padding: 0;
+}

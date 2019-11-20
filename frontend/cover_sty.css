@@ -1,0 +1,62 @@
+.cover {
+    font-size: 3em;
+    font-weight: bold;
+    color: white;
+    height: var(--cover-height);
+    background-image: url("../../user_pic/cover.jpg");
+}
+
+.cover-wrapper{
+    display: grid;
+    width: 100%;
+    grid-template-columns: 150px 100%;
+    align-items: end;
+    justify-items: start;
+    justify-content: space-between;
+}
+img.userPic {
+    border-radius: 50%;
+    border:3px solid var(--on-top-color);
+    width: 150px;
+    height: 150px
+}
+
+button.prof-button{
+    background-color: Transparent;
+    background-repeat:no-repeat;
+    border: none;
+    cursor:pointer;
+    overflow: hidden;
+    outline:none;
+}
+
+.user-name{
+    padding-bottom: 6px;
+    color: var(--on-top-color);
+}
+.user-name a{
+    color: var(--on-top-color);
+    text-decoration: none;
+    
+}
+
+.upload-btn-wrapper{
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+}
+.upload-btn-wrapper input[type=file] {
+
+}
+.upload-btn-wrapper input[type=file]:hover{
+
+}
+    
+.upload-wrapper{
+    display: grid;
+    width: 100%;
+    grid-template-columns: 60% 40%;
+    align-items: start;
+    justify-content: space-between;
+    padding-right: 2em;
+}

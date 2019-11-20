@@ -1,0 +1,13 @@
+TODO
+
+* make duplicate bandnames possible
+* search result styling
+* logging
+* buttons in ios safari
+---------------------------------------------
+BEFORE ROLLOUT
+* restrict api credentials on here
+* secure config.php - config file for sql DB access
+* in upload_pic and load_user_pic adjust file to user pic
+* restrict user access to folders backend and frontend/content
+
