@@ -9,7 +9,7 @@ function disp_instruments($instruments, $disp_opt){
         echo "</div>";
         
         if($disp_opt==1){                                                        // option to delete inst from user list
-             echo "<a href=/musicdb/frontend/disp_instruments.php?delete=".urlencode($item["inst"])." > ";
+             echo "<a href=/musicdb/frontend/disp_instruments.php?delete=".urlencode($item["inst_id"])." > ";
             echo "<span type='button' class='mini-close' >&times;</span>";
         }
         elseif($disp_opt==2){                                                       // plain instrument list

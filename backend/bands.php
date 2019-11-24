@@ -1,133 +1,80 @@
 <?php
 include_once("functions.php");
 include_once ("following.php");
-include_once('db/config.php');
-class band{
-    
+
+
+class band{    
     private $band_id;
     private $band_name;
+    
     private $band_leader;
     private $band_members;
     private $band_instruments;
     private $band_email;
     
-    
+    private function get_num_of_voices(){
+        global $db;
+        $user_check_query = "SELECT * FROM band_voices WHERE band_id=".$this->band_id;
+        try {
+            $result = mysqli_query($db, $user_check_query);
+        } catch(mysqli_sql_exception $ex){
+            throw new Exception("bands.php, change location" . $ex);
+        }
+       
+        return $result->num_rows;
+    }
   
-    public function __construct($bnd_name, $bndId){
-        $this->band_id = $bndId;
-        
-        $this->band_name = $bnd_name; 
+    public function __construct($bndId){
+        $band = get_band_from_id($bndId);
+        $this->band_id = $bndId;        
+        $this->band_name = $band["bandname"];
     }
     
-
-        
-    
+    /* Functions to get the state of the band *
+     * ************************************** *
+     */
     public function get_band_name(){
         return $this->band_name;
     }
-    
-    
     public function get_band_id(){
         return $this->band_id;
     }
+    
+    
     /**
      * 
      * @global type $db
      * @global type $errors
      * @param type $instruments: PHP Array with following entry format: ["inst_name"], ["num_of_players"]
      */
-    public function db_create_band($instruments, $location){
-        
-        global $db, $errors;
-        if(empty($this->band_name)){
-            array_push($errors, "Band / orchestra name is required");
-        }
-        if(empty($instruments)){
-            array_push($errors, "Instrument list is required");
-        }
-        
-        // check if band name already exists: later duplicate band names possible
-        $user_check_query = "SELECT * FROM bands WHERE bandname='".$this->band_name."' LIMIT 1";
-        try {
-            $result = mysqli_query($db, $user_check_query);
-        } catch(mysqli_sql_exception $ex){
-            throw new Exception("bands.php, db_create_band: Error while checking if band name exists" . $ex);
-        }
-        $band = mysqli_fetch_assoc($result);
-        if($band){
-            array_push($errors, "Band / orchestra name already exists");
-        }
-
-        // create band if no previous errors
-        if(count($errors) == 0){
-            // load data in db
-            $loc = explode("|",$location);
-            $lat = floatval($loc[0]);
-            $lon = floatval($loc[1]);
-            
-            $user_check_query = "INSERT INTO bands(bandname, email, status, lat, lon) VALUES('".$this->band_name."', '".$this->email."',1,".$lat.", ".$lon.")";
-            try {
-                $result = mysqli_query($db, $user_check_query);
-            } catch(mysqli_sql_exception $ex){
-                throw new Exception("bands.php, db_create_band: Error while creating band" . $ex);
-            }
-            
-            // get band id
-            $this->band_id = mysqli_insert_id($db);
-            
-            //fill instrument table
-            // create string to load instrument list to db
-            $inst_str = array();
-            $i=1;
-            foreach($instruments as $item){
-                $num_player = $item["num_player_inst"];
-                
-                for($j=0;$j<$num_player; $j++){
-                    if(empty($inst_str)){
-                        $inst_str =  "('" . e($item["inst_name"]) . "', " . $this->band_id . ", ".$i.")"; //sanitize and add to str
-                    }
-                    else{
-                        $inst_str = $inst_str . ", ('" . e($item["inst_name"]) .   "', " . $this->band_id . ", ".$i. ")";
-                    }
-                }
-                $i++;
-            }
-            
-            $user_check_query = "INSERT INTO band_inst (inst_name, band_id, inst_part) VALUES " . $inst_str;
-            try {
-                    $result = mysqli_query($db, $user_check_query);
-            } catch(mysqli_sql_exception $ex){
-                throw new Exception("bands.php, db_create_band: Error 1 while updating instrument table" . $ex);
-            }
-            
-            
-            $user_check_query = "INSERT INTO band_inst (inst_name, band_id, player_id, leader) VALUES ('Organizer', ".$this->band_id.", ".e($_SESSION['user']['id']).", TRUE)";
-            try {
-               $result = mysqli_query($db, $user_check_query);
-            } catch(mysqli_sql_exception $ex){
-                throw new Exception("bands.php, db_create_band: Error 2 while updating instrument table" . $ex);
-            }
-        }
-        else {
-            foreach($errors as $item){
-                echo $item."<br>";
-            }
-            
-        }
-    }
-    
-    public function add_instrument($inst_name, $inst_num){        
+    public function add_instrument($inst_name, $inst_num, $voice_id){        
         global $db;
-        $inst_part = $this->get_max_part() + 1;
-        $user_check_query = "INSERT INTO band_inst (inst_name, band_id, inst_part) VALUES ('".e($inst_name)."', '".$this->band_id."', '".e($inst_part)."')";
+        if($voice_id==-1){
+            $this->add_voice("");
+            $voice_id = $band_id = mysqli_insert_id($db);
+        }
+        $user_check_query = "INSERT INTO band_inst (inst_name, band_id, voice_id) VALUES ('".e($inst_name)."', '".$this->band_id."', '".$voice_id."')";
         try {
             for($i = 0; $i < $inst_num;$i++){
                 mysqli_query($db, $user_check_query);
-            }
-        
+            }        
         } catch(mysqli_sql_exception $ex){
             throw new Exception("bands.php, add_instrument: Error 1 while updating instrument table" . $ex);
+        }       
+    }
+    
+    public function add_voice($voice_name){
+        global $db;
+        $num_voices = $this->get_num_of_voices();
+        if(empty($voice_name)){
+            $voice_name = "voice ".($num_voices);
         }
+        $user_check_query = "INSERT INTO band_voices (band_id, voice_name) VALUES (".$this->band_id.", '".$voice_name."')";
+        try {
+            $result = mysqli_query($db, $user_check_query);
+        } catch(mysqli_sql_exception $ex){
+            throw new Exception("bands.php, add_voice" . $ex);
+        }     
     }
     
     /**Change location of band. Assumption: location is string with $lon,$lat format
@@ -149,17 +96,6 @@ class band{
         }
     }
     
-    public function get_max_part(){
-        global $db;
-        $user_check_query = "SELECT band_id, MAX(inst_part) FROM band_inst WHERE band_id=".$this->band_id;
-        try {
-            $result = mysqli_query($db, $user_check_query);
-        } catch(mysqli_sql_exception $ex){
-            throw new Exception("bands.php, get_max_part: Error 1 while updating instrument table" . $ex);
-        }
-        $row = mysqli_fetch_array($result);
-        return $row["MAX(inst_part)"];
-    }
     /**
      * User $user_id joins band as player of instrument with $inst_id
      * @global type $db
@@ -168,9 +104,8 @@ class band{
      * @param type $inst_id
      * @throws Exception
      */
-    
     public function join_inst($user_id, $inst_id){
-        global $db, $errors;
+        global $db;
         $user_check_query = "UPDATE band_inst SET player_id=".$user_id." WHERE band_id=".$this->band_id." AND inst_id =".$inst_id;
         try {
                 $result = mysqli_query($db, $user_check_query);
@@ -194,7 +129,6 @@ class band{
         } catch(mysqli_sql_exception $ex){
             throw new Exception("bands.php, join_inst: " . $ex);
         }
-        
     }
     /**
      * User $user_id applies for instrument $inst_id
@@ -202,7 +136,7 @@ class band{
      * @param type $inst_id
      */
     public function apply_inst($user_id, $inst_id){
-        global $db, $errors;
+        global $db;
         $user_check_query = "SELECT * FROM band_inst_apply WHERE inst_id =".$inst_id." AND player_id=".$user_id;
         try {
                 $result = mysqli_query($db, $user_check_query);
@@ -231,7 +165,6 @@ class band{
     public function withdraw_inst($user_id, $inst_id){
         global $db, $errors;
         $user_check_query = "UPDATE band_inst_apply SET status = 0 WHERE inst_id =".$inst_id." AND player_id=".$user_id;
-
         try {
             $result = mysqli_query($db, $user_check_query);
         } catch(mysqli_sql_exception $ex){
@@ -247,7 +180,7 @@ class band{
      * @throws Exception
      */
     public function leave_inst($user_id, $inst_id){
-        global $db, $errors;
+        global $db;
         $user_check_query = "UPDATE band_inst SET player_id=NULL WHERE band_id=".$this->band_id." AND inst_id =".$inst_id." AND player_id =".$user_id;
         try {
                 $result = mysqli_query($db, $user_check_query);
@@ -257,7 +190,7 @@ class band{
     }
     
     public function check_if_applied($user_id, $inst_id){
-        global $db, $errors;
+        global $db;
         $user_check_query = "SELECT status FROM band_inst_apply WHERE player_id=".$user_id." AND inst_id=".$inst_id;
         try {
            $result = mysqli_query($db, $user_check_query);
@@ -269,8 +202,7 @@ class band{
         if((!empty($row)) && ($row['status'] ==1)){
             return True;
         }
-        else{
-            
+        else{            
             return False;
         }
         
@@ -282,56 +214,46 @@ class band{
      * @param type $user_id
      */
     public function check_if_member($user_id){
-        global $db, $errors;
-        $user_check_query = "SELECT * FROM band_inst WHERE band_id=".$this->band_id." AND player_id =".$user_id;
-       
+        global $db;
+        $user_check_query = "SELECT * FROM band_inst WHERE band_id=".$this->band_id." AND player_id =".$user_id;       
         try {
                 $result = mysqli_query($db, $user_check_query);
         } catch(mysqli_sql_exception $ex){
             throw new Exception("bands.php, check_if_member: Error while checking if user is member" . $ex);
         }
-
-        $row = mysqli_fetch_array($result);
-           
+        $row = mysqli_fetch_array($result);           
         if(!empty($row)){
             return True;
         }
-        else{
-            
+        else{           
             return False;
         }
-
     }
     
     public function check_if_member_inst($user_id, $inst_id){
-        global $db, $errors;
-        $user_check_query = "SELECT * FROM band_inst WHERE (inst_id=".$inst_id." AND band_id=".$this->band_id." AND player_id =".$user_id.")";
-       
+        global $db;
+        $user_check_query = "SELECT * FROM band_inst WHERE (inst_id=".$inst_id." AND band_id=".$this->band_id." AND player_id =".$user_id.")";       
         try {
                 $result = mysqli_query($db, $user_check_query);
         } catch(mysqli_sql_exception $ex){
             throw new Exception("bands.php, check_if_member_inst: Error while checking if user is member and plays inst." . $ex);
         }
-
-        $row = mysqli_fetch_array($result);
-           
+        $row = mysqli_fetch_array($result);        
         if(!empty($row)){
             return True;
         }
-        else{
-            
+        else{           
             return False;
         }
     }
     
     public function check_if_inst_in_band($inst_id){
-        global $db, $errors;
-        
+        global $db;        
         $user_check_query = "SELECT * FROM band_inst WHERE inst_id =" . $inst_id. " AND band_id = ".$this->band_id;
         try {
             $result = mysqli_query($db, $user_check_query);
         } catch(mysqli_sql_exception $ex){
-           throw new Exception("bands.php, check_if_leader" . $ex);
+           throw new Exception("bands.php, check if inst in band" . $ex);
         }
         $row = mysqli_fetch_array($result);
         if(empty($row)){
@@ -345,20 +267,18 @@ class band{
                 
                 
     public function check_inst_null($inst_id){
-        global $db, $errors;
-        
+        global $db;        
         $user_check_query = "SELECT * FROM band_inst WHERE inst_id =" . $inst_id. " AND band_id = ".$this->band_id;
         try {
             $result = mysqli_query($db, $user_check_query);
         } catch(mysqli_sql_exception $ex){
-           throw new Exception("bands.php, check_if_leader" . $ex);
+           throw new Exception("bands.php, check_if_inst_null" . $ex);
         }
         while($row = mysqli_fetch_array($result)){
             if(empty($row['player_id'])){
                 return True;
             }
-        }            
-        
+        }                    
         return False;
     }
     
@@ -497,6 +417,7 @@ class band{
         }
         return $res;
     }
+    
     /** check if user is band leader
      * 
      * @global type $db
@@ -506,49 +427,28 @@ class band{
      */
     public function check_if_leader($user_id){
         global $db, $errors;
-        if(isLoggedIn()){
-            $user_id = e($user_id);
-            $user_check_query = "SELECT * FROM band_inst WHERE player_id =" . $user_id. " AND band_id = ".$this->band_id;
-            try {
-                $result = mysqli_query($db, $user_check_query);
-            } catch(mysqli_sql_exception $ex){
-               throw new Exception("bands.php, check_if_leader" . $ex);
-            }
-            while($row = mysqli_fetch_array($result)){
-                if($row['leader'] == 1){
-                    return True;
-                }
-            }            
+        
+        $user_id = e($user_id);
+        $user_check_query = "SELECT leader FROM bands WHERE band_id = ".$this->band_id;
+        try {
+            $result = mysqli_query($db, $user_check_query);
+        } catch(mysqli_sql_exception $ex){
+           throw new Exception("bands.php, check_if_leader" . $ex);
         }
+        while($row = mysqli_fetch_array($result)){
+            if($row['leader'] == $user_id){
+                return True;
+            }
+        }            
+        
         return False;
-
     }
     
-    function db_delete_band(){
-
-    }
-    function add_member(){
-
-    }
-    function delete_member(){
-
-    }
-   
-    function delete_instrument(){
-
-    }
-    function get_instruments(){
-        
-    }
-    function get_members(){
-        
-    }
     
 }
 
-function get_num_bands(){
-            return 0;
-}
+
+    
 
 /**
  * 
@@ -566,11 +466,10 @@ function search_for_band($offset, $search_query, $num_disp, $filter){
     $searchResult = array();
     $search_query = e($search_query);
     $user_check_query = "";
-    global $db, $errors;
+    global $db;
     if(isset($_GET['submit']) OR isset($_GET['search_go'])){ 
         if($filter == "a") {
-            $user_check_query="SELECT * FROM bands WHERE status=1 AND bandname LIKE '%" . $search_query . "%'  LIMIT ".$offset.", ". $num_disp;
-     
+            $user_check_query="SELECT * FROM bands WHERE status=1 AND bandname LIKE '%" . $search_query . "%'  LIMIT ".$offset.", ". $num_disp;     
         }
         elseif($filter == "i") {
             $user_check_query="SELECT * FROM bands WHERE status=0 AND bandname LIKE '%" . $search_query . "%'  LIMIT ".$offset.", ". $num_disp;
@@ -582,21 +481,17 @@ function search_for_band($offset, $search_query, $num_disp, $filter){
                 $result = mysqli_query($db, $user_check_query);
         } catch(mysqli_sql_exception $ex){
             throw new Exception("bands.php, search_for_band: Error 1 while searching for band" . $ex);
-        }
-        
+        }       
         while($user = mysqli_fetch_assoc($result)){
-            
-            $bndname = $user['bandname'];
-            $bndid = $user['band_id'];
-            $my_band = new band($bndname, $bndid);
-
-
+            $band_id = $user['band_id'];
+            $my_band = new band($band_id);
             array_push($searchResult, $my_band);
-        }
-      
+        }     
     }
     return $searchResult;
 }
+
+
 /**
  * 
  * @global type $db
@@ -607,43 +502,30 @@ function search_for_band($offset, $search_query, $num_disp, $filter){
  * @throws Exception
  */
 
-function get_user_bands($user_id, $filter){
-    
+function get_user_bands($user_id, $filter){    
     $user_id = e($user_id);
-
-    global $db, $errors;
+    global $db;
     $user_check_query = "";
     if($filter == "a"){             // active bands
-        $user_check_query="SELECT DISTINCT bands.band_id, bands.bandname FROM bands INNER JOIN band_inst ON bands.band_id=band_inst.band_id WHERE bands.status=1 AND band_inst.player_id=".$user_id;
-        
+        $user_check_query="SELECT DISTINCT bands.band_id, bands.bandname FROM bands INNER JOIN band_inst ON bands.band_id=band_inst.band_id WHERE bands.status=1 AND band_inst.player_id=".$user_id;        
     }
     elseif($filter == "i"){             // inactive bands
-        $user_check_query="SELECT DISTINCT bands.band_id, bands.bandname FROM bands INNER JOIN band_inst ON bands.band_id=band_inst.band_id WHERE bands.status=0 AND band_inst.player_id=".$user_id;
-        
-        
+        $user_check_query="SELECT DISTINCT bands.band_id, bands.bandname FROM bands INNER JOIN band_inst ON bands.band_id=band_inst.band_id WHERE bands.status=0 AND band_inst.player_id=".$user_id;    
     }
     else {                          // all
-        $user_check_query="SELECT DISTINCT bands.band_id, bands.bandname FROM bands INNER JOIN band_inst ON bands.band_id=band_inst.band_id WHERE band_inst.player_id=".$user_id;
-        
-        
+        $user_check_query="SELECT DISTINCT bands.band_id, bands.bandname FROM bands INNER JOIN band_inst ON bands.band_id=band_inst.band_id WHERE band_inst.player_id=".$user_id;      
     }
-
     try {
             $result = mysqli_query($db, $user_check_query);
     } catch(mysqli_sql_exception $ex){
         throw new Exception("bands.php, get_user_bands: Error 1 while searching for band" . $ex);
     }
     $searchResult = array();
-    while($user = mysqli_fetch_assoc($result)){
-        $bndname = $user['bandname'];
-        $bndid = $user['band_id'];
-        $my_band = new band($bndname, $bndid);
-
-
+    while($user = mysqli_fetch_assoc($result)){       
+        $band_id = $user['band_id'];
+        $my_band = new band($band_id);
         array_push($searchResult, $my_band);
     }
-
-
     return $searchResult;
 }
 
@@ -653,7 +535,7 @@ function get_inst_by_id($inst_id){
     $user_check_query = "SELECT * FROM band_inst WHERE inst_id='$inst_id' LIMIT 10";
     try{
         $result = mysqli_query($db, $user_check_query);
-    }catch(mysqli_sql_exception $ex){
+    } catch(mysqli_sql_exception $ex){
             throw new Exception("instruments.php, get_my_inst:" . $ex);
     }
     $inst = mysqli_fetch_assoc($result);
@@ -661,10 +543,8 @@ function get_inst_by_id($inst_id){
 }
     
     
-function get_name_from_id($bid){
-   
- 
-    global $db, $errors;
+function get_name_from_id($bid){ 
+    global $db;
     $user_check_query = "SELECT bandname FROM bands WHERE band_id =".$bid;
     try {
         $result = mysqli_query($db, $user_check_query);
@@ -676,10 +556,8 @@ function get_name_from_id($bid){
 }
 
 function delete_band($bid){
-    global $db, $errors;
-    
+    global $db;    
     $user_check_query = "UPDATE bands SET status = 0 WHERE band_id =".$bid;
-
     try {
         $result = mysqli_query($db, $user_check_query);
     } catch(mysqli_sql_exception $ex){
@@ -687,3 +565,102 @@ function delete_band($bid){
     }
 }
 
+function get_band_from_id($band_id){
+    global $db;
+    $user_check_query = "SELECT * FROM bands WHERE band_id=".$band_id;
+    try {
+        $result = mysqli_query($db, $user_check_query);
+    } catch(mysqli_sql_exception $ex){
+       throw new Exception("bands.php, get_name from id: " . $ex);
+    }
+    $band = mysqli_fetch_assoc($result);
+    return $band;
+}
+
+
+function db_create_band($band_name, $instruments, $location){        
+    global $db, $errors;
+    if(empty($band_name)){
+        array_push($errors, "Band / orchestra name is required");
+    }
+    if(empty($instruments)){
+        array_push($errors, "Instrument list is required");
+    }
+
+    // check if band name already exists: later duplicate band names possible
+    $user_check_query = "SELECT * FROM bands WHERE bandname='".$band_name."' LIMIT 1";
+    try {
+        $result = mysqli_query($db, $user_check_query);
+    } catch(mysqli_sql_exception $ex){
+        throw new Exception("bands.php, db_create_band: Error while checking if band name exists" . $ex);
+    }
+    $band = mysqli_fetch_assoc($result);
+    if($band){
+        array_push($errors, "Band / orchestra name already exists");
+    }
+
+    // create band if no previous errors
+    if(count($errors) == 0){
+        // load data in db
+        $loc = explode("|",$location);
+        $lat = floatval($loc[0]);
+        $lon = floatval($loc[1]);
+
+        $user_check_query = "INSERT INTO bands(bandname, email, status, lat, lon, leader) VALUES('".$band_name."','', 1,".$lat.", ".$lon.", ".$_SESSION['user']['id'].")";
+        try {
+            $result = mysqli_query($db, $user_check_query);
+        } catch(mysqli_sql_exception $ex){
+            throw new Exception("bands.php, db_create_band: Error while creating band" . $ex);
+        }
+
+        // get band id
+        $band_id = mysqli_insert_id($db);
+
+        //fill instrument table
+        // create string to load instrument list to db
+        $inst_str = array();
+        $voice_arr = array();
+        foreach($instruments as $item){
+            $num_player = $item["num_player_inst"];
+            if(!array_key_exists(e($item["voice_inst"]), $voice_arr)){                
+                // Add new voice if it is the first instrument of the voice and safe voice_id in voice_arr
+                $user_check_query = "INSERT INTO band_voices (band_id, voice_name) VALUES (".$band_id.", 'Voice ".e($item["voice_inst"])."')";
+                try {
+                    $result = mysqli_query($db, $user_check_query);
+                } catch(mysqli_sql_exception $ex){
+                    throw new Exception("bands.php, db_create_band: Error 1 while updating voice table" . $ex);
+                } 
+                $voice_arr[e($item["voice_inst"])] = mysqli_insert_id($db);
+            }
+            
+            for($j=0;$j<$num_player; $j++){
+                if(empty($inst_str)){
+                    $inst_str =  "('" . e($item["inst_name"]) . "', " . $band_id . ", ".$voice_arr[e($item["voice_inst"])].")"; //sanitize and add to str
+                }
+                else{
+                    $inst_str = $inst_str . ", ('" . e($item["inst_name"]) .   "', " . $band_id . ", ".$voice_arr[e($item["voice_inst"])]. ")";
+                }
+            }
+        }        
+        //update instrument table
+        $user_check_query = "INSERT INTO band_inst (inst_name, band_id, voice_id) VALUES " . $inst_str;
+        try {
+                $result = mysqli_query($db, $user_check_query);
+        } catch(mysqli_sql_exception $ex){
+            throw new Exception("bands.php, db_create_band: Error 1 while updating instrument table" . $ex);
+        }
+
+        // Add Founder as organizer
+        $user_check_query = "INSERT INTO band_inst (inst_name, band_id, player_id) VALUES ('Organizer', ".$band_id.", ".e($_SESSION['user']['id']).")";
+            try {
+               $result = mysqli_query($db, $user_check_query);
+            } catch(mysqli_sql_exception $ex){
+                throw new Exception("bands.php, db_create_band: Error 2 while updating instrument table" . $ex);
+        }
+    }
+    else {
+        foreach($errors as $item){
+            echo $item."<br>";
+        }
+    }
+}

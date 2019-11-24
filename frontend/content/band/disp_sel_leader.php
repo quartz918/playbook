@@ -2,7 +2,7 @@
 include_once("../backend/google_places_request.php");
 include("../backend/set_band_var.php");
 if(isset($_GET["addInstrument"])){
-    $my_band->add_instrument(e($_POST["inst"]), e($_POST["num_inst"]));
+    $my_band->add_instrument(e($_POST["inst"]), e($_POST["num_inst"]),-1);
 }
 if(!empty($_POST["location"])){
     $my_band->change_location(e($_POST["location"]));

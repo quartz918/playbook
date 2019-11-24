@@ -1,4 +1,5 @@
 <?php include_once('../backend/functions.php');
+include('../backend/check_if_logged_in.php');	
 include('../backend/set_band_var.php');
 
 ?>

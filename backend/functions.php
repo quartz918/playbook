@@ -19,6 +19,7 @@ if (isset($_POST['login'])) {
     if(isset($_GET['forward'])){
         $forward=e($_GET["forward"]);
     }
+    $login_time = getdate();
     login($forward);
 }
 /* logout */ 
@@ -160,15 +161,20 @@ function getUserById($id){
 
 function get_username_from_id($id) {
     global $db;
-    $query = "SELECT username FROM users WHERE id=" . $id;
-    try{
-        $result = mysqli_query($db, $query);
+    if($id == null){
+        return null;
     }
-    catch(mysqli_sql_exception $ex){
-         throw new Exception("functions.php, getUserById: Error while getting user id" . $ex);
+        else {
+        $query = "SELECT username FROM users WHERE id=" . $id;
+        try{
+            $result = mysqli_query($db, $query);
+        }
+        catch(mysqli_sql_exception $ex){
+             throw new Exception("functions.php, getUserById: Error while getting user id" . $ex);
+        }
+        $user = mysqli_fetch_assoc($result);
+        return $user["username"];
     }
-    $user = mysqli_fetch_assoc($result);
-    return $user["username"];
 }
 
 

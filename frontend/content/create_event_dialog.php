@@ -25,8 +25,6 @@
                 </div>
                 <input type="submit" name="createEvent" value="create event">
             </form>
-           
-            
         </div>
     </div>
 </div>

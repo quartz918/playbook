@@ -1,4 +1,5 @@
 <?php include('../backend/functions.php');
+
 ?>
 <!doctype html>
 <html lang="en">

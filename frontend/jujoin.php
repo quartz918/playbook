@@ -1,5 +1,6 @@
 <?php
 /* join and leave bands */
+include('../backend/check_if_logged_in.php');	
 include_once('../backend/functions.php');
 include_once('../backend/bands.php');
 if(isset($_GET['inst_id']) && isset($_GET['option'])){

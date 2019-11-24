@@ -3,6 +3,7 @@
 /** Follow & Unfollow user; display new follow/unfollow button */
 include_once('../backend/functions.php');
 include_once('../backend/following.php');
+include('../backend/check_if_logged_in.php');	
 if(isset($_GET['uid']) ){
     $follow = e($_GET['uid']);
 

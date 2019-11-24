@@ -1,7 +1,3 @@
-<?php 
-include_once("../../../backend/functions.php");
-
-?>
 <div class="wrapper">
     <?php include('content/header.php');?>
 

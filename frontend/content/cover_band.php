@@ -13,7 +13,7 @@
             
 
             
-            $my_band = new band($band_name, $band_id);
+            $my_band = new band($band_id);
             $user_id = e($_SESSION['user']['id']);
             if($my_band->check_if_leader($user_id)){
                 include('cover_band_leader.php');

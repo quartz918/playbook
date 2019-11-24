@@ -21,7 +21,7 @@ function add_instrument($addInst, $desc){
         return 5;
     }
     $userid = $_SESSION['user']['id'];
-    $user_check_query = "SELECT instruments FROM instruments WHERE id='$userid' LIMIT 10";
+    $user_check_query = "SELECT instrument_name FROM instruments WHERE user_id='$userid' LIMIT 10";
     try{
         $result = mysqli_query($db, $user_check_query);
     }catch(mysqli_sql_exception $ex){
@@ -46,7 +46,7 @@ function add_instrument($addInst, $desc){
     }
     else{
 
-        $user_check_query = "INSERT INTO instruments (id,instruments, description) VALUES('$userid', '$addInst', '$desc')";
+        $user_check_query = "INSERT INTO instruments (user_id, instrument_name, description) VALUES('$userid', '$addInst', '$desc')";
         try {
             mysqli_query($db, $user_check_query);
         } catch(mysqli_sql_exception $ex){
@@ -64,7 +64,7 @@ function delete_instrument($del_instr){
     global $db, $errors;
     $userid = $_SESSION['user']['id'];
     $del_instr = e($del_instr);         // sanitize
-    $user_check_query = "SELECT * FROM instruments WHERE id='$userid' AND instruments='$del_instr'  LIMIT 1";
+    $user_check_query = "SELECT * FROM instruments WHERE user_id='$userid' AND instrument_id='$del_instr'  LIMIT 1";
     try{
         $result = mysqli_query($db, $user_check_query);
     }catch(mysqli_sql_exception $ex){
@@ -73,7 +73,7 @@ function delete_instrument($del_instr){
     
   
         if(mysqli_num_rows($result) > 0){
-            $user_check_query = "DELETE FROM instruments WHERE id='$userid' AND instruments='$del_instr'";
+            $user_check_query = "DELETE FROM instruments WHERE user_id='$userid' AND instrument_id='$del_instr'";
             if(!mysqli_query($db, $user_check_query)){
                  echo "In instruments.php, function delete_instrument: SQL ERROR";
                  return 1;
@@ -85,7 +85,7 @@ function delete_instrument($del_instr){
 function get_inst_user($i){
     global $db, $errors;
     $userid = e($i);
-    $user_check_query = "SELECT * FROM instruments WHERE id='$userid' LIMIT 10";
+    $user_check_query = "SELECT * FROM instruments WHERE user_id='$userid' LIMIT 10";
     try{
         $result = mysqli_query($db, $user_check_query);
     }catch(mysqli_sql_exception $ex){
@@ -97,8 +97,10 @@ function get_inst_user($i){
     $element = [];
     while($row = mysqli_fetch_array($result))
     {
-        $element["inst"] = $row["instruments"];
+        $element["inst"] = $row["instrument_name"];
         $element["desc"] = $row["description"];
+        $element["inst_id"] = $row["instrument_id"];
+        
         $rows[]=$element;
     }
     return $rows;
@@ -115,7 +117,7 @@ function get_my_instruments(){
     global $db, $errors;
     $userid = $_SESSION['user']['id'];
     $userid = e($userid);
-    $user_check_query = "SELECT * FROM instruments WHERE id='$userid' LIMIT 10";
+    $user_check_query = "SELECT * FROM instruments WHERE user_id='$userid' LIMIT 10";
     try{
         $result = mysqli_query($db, $user_check_query);
     }catch(mysqli_sql_exception $ex){
@@ -126,8 +128,9 @@ function get_my_instruments(){
     $element = [];
     while($row = mysqli_fetch_array($result))
     {
-        $element["inst"] = $row["instruments"];
+        $element["inst"] = $row["instrument_name"];
         $element["desc"] = $row["description"];
+        $element["inst_id"] = $row["instrument_id"];
         $rows[]=$element;
     }
     return $rows;

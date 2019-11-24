@@ -23,7 +23,7 @@ function display_list_events($res){
         echo "<div class='enum-item'>";
         echo "<div class='enum-item-header'>";
         echo "<div class='enum-item-title'>";
-        echo "<a id=".$event_id." onclick='setBandCookie(this.id)' href='disp_sel_band.php'>".$event_title."</a>";
+        echo "<a id=".$event_id." href='disp_event.php?event_id=".$event_id."'>".$event_title."</a>";
         echo "</div>";
         
       

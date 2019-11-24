@@ -4,12 +4,17 @@ CREATE TABLE users(
 	id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	username VARCHAR(50) NOT NULL UNIQUE,
 	password VARCHAR(255) NOT NULL,
+	email VARCHAR(255) NOT NULL,
 	created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE my_instruments(
-	id INT NOT NULL,
-	instruments VARCHAR(50),
+
+
+CREATE TABLE instruments(
+	instrument_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	instrument_name VARCHAR(50),
+	user_id INT,
+	description LONGTEXT,
 	created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -17,28 +22,31 @@ CREATE TABLE bands(
 	band_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	bandname VARCHAR(50) NOT NULL UNIQUE,
 	email VARCHAR(255) NOT NULL,
+	leader INT,
 	status INT NOT NULL,
 	lat DOUBLE,
 	lon DOUBLE,
-	created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+	FOREIGN KEY (leader) REFERENCES users(id)
 );
 
 CREATE TABLE band_inst(
 	inst_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	inst_name VARCHAR(50),
-	inst_part INT,
+	voice_id INT,
 	band_id INT NOT NULL,
 	player_id int,
 	leader boolean,
-	part_leader boolean,
 	FOREIGN KEY (band_id) REFERENCES bands(band_id),
-	FOREIGN KEY (player_id) REFERENCES users(id)
+	FOREIGN KEY (player_id) REFERENCES users(id),
+	FOREIGN KEY (voice_id) REFERENCES band_voices(voice_id)
 );
 
 CREATE TABLE band_members(
 	member_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	inst_id INT,
 	band_id INT NOT NULL,
+	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 	FOREIGN KEY (band_id) REFERENCES bands(band_id),
 	FOREIGN KEY (inst_id) REFERENCES band_inst(inst_id),
 	FOREIGN KEY (member_id) REFERENCES users(id)
@@ -51,6 +59,7 @@ CREATE TABLE band_inst_apply(
 	inst_id INT,
 	player_id INT,
 	status INT,
+	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 	FOREIGN KEY (inst_id) REFERENCES band_inst(inst_id),
 	FOREIGN KEY (player_id) REFERENCES users(id)
 );
@@ -65,20 +74,40 @@ CREATE TABLE calendar(
 	lon DOUBLE,
 	lat DOUBLE,
 	description LONGTEXT,
+	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 	FOREIGN KEY (band_id) REFERENCES bands(band_id)
 );
-	
-	
-DESCRIBE band_inst;
-DROP TABLE calendar;
 
-ALTER TABLE bands 
-	ADD COLUMN lat DOUBLE;
+CREATE TABLE band_voices(
+	voice_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	band_id INT,
+	voice_name VARCHAR(255),
+	voice_leader INT,
+	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+	FOREIGN KEY (band_id) REFERENCES bands(band_id),
+	FOREIGN KEY (voice_leader) REFERENCES users(id)
+);
+
+
+CREATE TABLE event_attend(
+	attend_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	event_id INT,
+	user_id INT,
+	status INT,
+	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+	FOREIGN KEY (event_id) REFERENCES calendar(event_id),
+	FOREIGN KEY (user_id) REFERENCES users(id)
+	);
+DESCRIBE band_inst;
+DROP TABLE band_members;
+
+ALTER TABLE instruments 
+	DROP FOREIGN KEY user_id;
 
 SHOW COLUMNS FROM bands;
 
-SELECT * FROM bands;
-
+SELECT * FROM instruments;
+SELECT * FROM event_attend;
 CREATE TABLE instruments(
 	instrument VARCHAR(50) NOT NULL UNIQUE
 );
@@ -91,7 +120,7 @@ UPDATE users SET follow='[]' WHERE username = "k";
 
 SET FOREIGN_KEY_CHECKS = 1;
 TRUNCATE TABLE bands;
-DROP TABLE band_inst_apply;
+DROP TABLE instruments;
 
 LOAD DATA LOCAL INFILE '/home/ulysses/lab/musicdb/misc/inst_adj.txt' 
 REPLACE INTO TABLE instruments 

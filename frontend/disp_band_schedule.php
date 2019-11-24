@@ -1,4 +1,5 @@
 <?php include_once('../backend/functions.php');
+include('../backend/check_if_logged_in.php');	
 include('../backend/set_band_var.php');
 include_once('content/disp_list_instruments.php');
 include_once('../backend/calendar.php');
@@ -62,7 +63,7 @@ if(isset($_POST["createEvent"])){
  if(isLoggedIn()){
      $user_id = e($_SESSION['user']['id']);
      if($my_band->check_if_leader($user_id)){
-   
+
          include('content/band/disp_sched_leader.php');
          
      }
@@ -71,10 +72,12 @@ if(isset($_POST["createEvent"])){
          include('content/band/disp_sched_mem.php');
      }
      else {
+
           include('content/band/disp_sched_in.php');
      }
  }
  else {
+
      include('content/band/disp_sched_out.php');
  }
  

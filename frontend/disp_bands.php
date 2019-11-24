@@ -72,16 +72,17 @@ include_once('../backend/google_places_request.php');
                 $instArray = array();
                 $instStr = "inst".$i;
                 $num_play_str = "num_inst".$i;
-               
-                while(!empty($_POST[$instStr])){
-                   
-                    $item = array("inst_name" => e($_POST[$instStr]), "num_player_inst"=> e($_POST[$num_play_str]));
+                $voice_inst = "voice_inst".$i;
+                
+                while(!empty($_POST[$instStr])){                   
+                    $item = array("inst_name" => e($_POST[$instStr]), "num_player_inst"=> e($_POST[$num_play_str]), "voice_inst"=>e($_POST[$voice_inst]));
                     array_push($instArray, $item);
                     $i++;
                     $instStr = "inst".$i;
                     $num_play_str = "num_inst".$i;
+                    $voice_inst = "voice_inst".$i;
                 }
-                $fBand = new band($bandname,0);
+                
                 
                 $location="";
                 if(!empty($_POST["location"])){
@@ -93,7 +94,8 @@ include_once('../backend/google_places_request.php');
                     
                 }
         
-                $fBand->db_create_band($instArray, $location);
+                db_create_band($bandname,$instArray, $location);
+                echo "You founded ".$bandname;
             }
         }
         
