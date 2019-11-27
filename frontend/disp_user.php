@@ -21,6 +21,7 @@ if(isset($_GET["user_id"]) && isset($_GET["user_name"])){
 <link rel="stylesheet" type="text/css" href="home_sty.css">
 <link rel="stylesheet" type="text/css" href="content_sty.css">
 <link rel="stylesheet" type="text/css" href="following_sty.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
 <div class="wrapper">

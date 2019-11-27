@@ -5,7 +5,7 @@
     <div class="navbar">
         <ul class="navigation">
             <li><a href="disp_sel_band.php" class="active">About</a></li>
-            <li><a href="disp_band_inst.php?filter=1" >Instruments</a></li>
+            <li><a href="disp_band_inst.php?filter=all" >Instruments</a></li>
              <li><a href="disp_band_schedule.php" >Schedule</a></li>
         </ul>
     </div>

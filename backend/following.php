@@ -49,7 +49,7 @@ function follow_user($follow){
     $userid = $_SESSION['user']['id'];
     $userid = e($userid);
     
-    $user_check_query = "INSERT INTO follow (id,follow_id) VALUES('$userid', '$follow')";
+    $user_check_query = "INSERT INTO follow (user_id,follow_id) VALUES('$userid', '$follow')";
     try {
         mysqli_query($db, $user_check_query);
     } catch(mysqli_sql_exception $ex){
@@ -66,7 +66,7 @@ function unfollow_user($follow){
     if(checkIfFollowing($follow) == 0){        
         return 1;
     }
-    $user_check_query = "DELETE FROM follow WHERE id='$userid' AND follow_id='$follow'";
+    $user_check_query = "DELETE FROM follow WHERE user_id='$userid' AND follow_id='$follow'";
     try {
         mysqli_query($db, $user_check_query);
     } catch(mysqli_sql_exception $ex){
@@ -84,7 +84,7 @@ function checkIfFollowing($follow){
     $userid = $_SESSION['user']['id'];
     $userid = e($userid);
     $follow = e($follow);
-    $user_check_query = "SELECT * FROM follow WHERE id='$userid' AND follow_id='$follow'  LIMIT 1";
+    $user_check_query = "SELECT * FROM follow WHERE user_id='$userid' AND follow_id='$follow'  LIMIT 1";
     try {
         $result = mysqli_query($db, $user_check_query);
     } catch(mysqli_sql_exception $ex){
@@ -104,7 +104,7 @@ function get_my_follow($offset){
     global $db, $errors;
     $userid = $_SESSION['user']['id'];
     $userid = e($userid);
-    $user_check_query = "SELECT users.username, users.id FROM follow INNER JOIN users ON follow.follow_id = users.id WHERE follow.id =".$userid." LIMIT ". $offset .", 10;";
+    $user_check_query = "SELECT users.username, users.id FROM follow INNER JOIN users ON follow.follow_id = users.id WHERE follow.user_id =".$userid." LIMIT ". $offset .", 10;";
     try {
         $result = mysqli_query($db, $user_check_query);
     } catch(mysqli_sql_exception $ex){
@@ -127,7 +127,7 @@ function get_my_follower($offset){
     global $db, $errors;
     $userid = $_SESSION['user']['id'];
     $userid = e($userid);
-    $user_check_query = "SELECT users.username, users.id FROM follow INNER JOIN users ON follow.id = users.id WHERE follow.follow_id =".$userid." LIMIT ". $offset .", 10;";
+    $user_check_query = "SELECT users.username, users.id FROM follow INNER JOIN users ON follow.user_id = users.id WHERE follow.follow_id =".$userid." LIMIT ". $offset .", 10;";
     try {
         $result = mysqli_query($db, $user_check_query);
     } catch(mysqli_sql_exception $ex){
@@ -172,7 +172,7 @@ function get_num_following(){
     $userid = $_SESSION['user']['id'];
     $userid = e($userid);
     $max= 1000;
-    $user_check_query = "SELECT * FROM follow WHERE id='$userid' LIMIT ".$max;
+    $user_check_query = "SELECT * FROM follow WHERE user_id='$userid' LIMIT ".$max;
     try {
         $result = mysqli_query($db, $user_check_query);
     } catch(mysqli_sql_exception $ex){

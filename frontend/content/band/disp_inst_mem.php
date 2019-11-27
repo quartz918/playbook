@@ -29,13 +29,13 @@ include_once("../../../backend/functions.php");
                  <div class="content-title-menu">
                     <ul class="content-title-menu-list">
                         <li>
-                            <a <?php if($filter==1){echo "class='active-sub'";}?> href="disp_band_inst.php?filter=1" >All</a>
+                            <a <?php if($filter=="all"){echo "class='active-sub'";}?> href="disp_band_inst.php?filter=all" >All</a>
                         </li>
                         <li>
-                            <a <?php if($filter==2){echo "class='active-sub'";}?> href="disp_band_inst.php?filter=2" >Open spots</a>
+                            <a <?php if($filter=="open"){echo "class='active-sub'";}?> href="disp_band_inst.php?filter=open" >Open spots</a>
                         </li>
                         <li>
-                            <a <?php if($filter==3){echo "class='active-sub'";}?> href="disp_band_inst.php?filter=3">My instruments</a>
+                            <a <?php if($filter=="applic"){echo "class='active-sub'";}?> href="disp_band_inst.php?filter=applic">My instruments</a>
                         </li>
                     </ul>
                 </div>
@@ -44,26 +44,15 @@ include_once("../../../backend/functions.php");
         <div class="enum-element">
             <?php
             
-                if(isset($_GET['filter'])) {
-                    $filter =e($_GET['filter']);
-                }
-                else {
-                    $filter =1;                     // default
-                }
-                
-                if($filter == 1){                   // display all
-                    $inst = $my_band->get_inst();
-                     disp_instruments_band($inst);
-                }
-                elseif($filter ==2 ){               //display open spots
-                    $inst = $my_band->get_empty_inst();
-                    disp_instruments_band($inst);
-                }
-                elseif($filter== 3){                // display user instruments
-                    $user_id = $_SESSION['user']['id'];
-                    $inst = $my_band->get_user_inst($user_id);
-                    disp_instruments_band($inst);
-                }
+                include_once('content/disp_objects.php');
+            include_once('../backend/functions.php');
+
+            $filter = e($_GET['filter']);
+            $my_band->get_band_structure();
+            $band_struct = $my_band->get_band_voices();
+
+
+            disp_band($my_band, "member", $filter);
             ?>
         </div>
     </div>

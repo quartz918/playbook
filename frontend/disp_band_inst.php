@@ -10,6 +10,7 @@ include_once('content/disp_list_instruments.php');
 <link rel="stylesheet" type="text/css" href="../format.css">
 <link rel="stylesheet" type="text/css" href="home_sty.css">
 <link rel="stylesheet" type="text/css" href="bands_sty.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
  <?php    

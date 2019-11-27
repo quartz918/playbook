@@ -1,6 +1,10 @@
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet">
 <div class="header-wrapper-right">
+    <div class="header-search-icon">
+        <button class="header-search-btn"><i class="material-icons on-top">search</i></button>
+        
+    </div>
     <div class="header-notification">
         <button class="header-notification-btn"><i class="material-icons inactive">library_books</i></button>
         <div class="header-notification-content">You do not have any notification</div>
@@ -30,11 +34,13 @@
     $(".header-setting-btn").click( function(event){
         event.stopPropagation();
         $(".header-notification-content").hide();
+        $(".header-mobile-search").hide();
         $(".header-settings-content").toggle();
     });
     $(".header-notification-btn").click( function(event){
         event.stopPropagation();
         $(".header-settings-content").hide();
+        $(".header-mobile-search").hide();
         $(".header-notification-content").toggle();
     });
     

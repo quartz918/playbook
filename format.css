@@ -15,6 +15,7 @@ and open the template in the editor.
     --std-background: #e8e9eb;
     --std-nav-height: 3em;
     --std-width: 60em;
+    --min-width: 320px;
     --modal-dialog-width: 40em;
     --std-button-col: #dbdbdb;
 }
@@ -30,77 +31,17 @@ a {
 }
 
 .header{
-
-    overflow:hidden;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0px;
     background-color: var(--header-footer-color);
-    padding: 1%;
-    height: 70px;
-}
-.ind-header-wrapper {
-    overflow:hidden;
-    background-color: var(--header-footer-color);
-    padding: 1%;
-    height: 75px;
-    display: grid;
-    width: 100%;
-    grid-template-columns: 70% 300px;
-    align-items: start;
-    justify-content: space-between;
-    z-index: 2001;
-
-}
-
-.ind-header-wrapper a.logo {
-    font-size: 25px;
-    font-weight: bold;
-    color: var(--on-top-color);
-}
-
-.ind-header-login-wrapper{
-    display: grid;
-    width: 100%;
-    grid-template-columns: 33% 33% 33%;
-    align-items: stretch;
-    justify-content: space-between;
     padding: 0px;
-    z-index: 2001;
-
-}
-
-.ind-header-login-wrapper input{
-    width: 100px;
+    height: 45px;
+    z-index: 1;
 }
 
 
-.ind-header-password, .ind-header-user-name{
-    padding: 0px;
-    margin: 0px;
-    justify-self: stretch;
-    width: 100%;
-    heigth: 40px;
-}
 
-.ind-header-login-button{
-    width:70px;
-    justify-self: start;
-    align-self: start;
-}
-.ind-header-login-btn{
-  height:35px;
-  width: 40px;
-  
-  background-color: var(--on-top-color); 
-  border: none;
-  text-decoration: none;
-  text-align: center;
-  font-size: 1em;
-  color: var(--header-footer-color);
-    border-radius: 10px;
-}
-.ind-header-login-btn:hover{
-   color: var(--on-top-color);
-   background-color: grey;
-}
 .logo{
     padding:0;
     margin:0;
@@ -127,15 +68,15 @@ a {
 
 
 .footer {
-    overflow:hidden;
+    
     background-color: var(--header-footer-color);
-    padding: 1%;
+    margin-top: -50px;
     left: 0;
     bottom: 0;
     width: 100%;
     position: absolute;
     text-align: center;
-    height: 2.5rem;  
+    height: 50px;  
     
 }
 

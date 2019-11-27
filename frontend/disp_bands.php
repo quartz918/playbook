@@ -14,6 +14,7 @@ include_once('../backend/google_places_request.php');
 <link rel="stylesheet" type="text/css" href="home_sty.css">
 <link rel="stylesheet" type="text/css" href="bands_sty.css">
 <link rel="stylesheet" type="text/css" href="found_band_sty.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
 <div class="wrapper">

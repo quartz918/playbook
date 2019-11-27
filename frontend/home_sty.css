@@ -17,11 +17,13 @@ body {
 
 }
 .content {
-    width: var(--std-width);
+    min-width: var(--min-width);
+    max-width: var(--std-width);
     height: 100%;
     margin: auto;
     
     padding-bottom: 2.5rem;
+    z-index:2;
 }
 
 

@@ -8,7 +8,14 @@ CREATE TABLE users(
 	created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-
+CREATE TABLE follow(
+	rel_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	user_id INT,
+	follow_id INT,
+	FOREIGN KEY (user_id) REFERENCES users(id),
+	FOREIGN KEY (follow_id) REFERENCES users(id),
+	created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
 
 CREATE TABLE instruments(
 	instrument_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
@@ -106,8 +113,8 @@ ALTER TABLE instruments
 
 SHOW COLUMNS FROM bands;
 
-SELECT * FROM instruments;
-SELECT * FROM event_attend;
+SELECT * FROM band_voices;
+SELECT * FROM band_inst;
 CREATE TABLE instruments(
 	instrument VARCHAR(50) NOT NULL UNIQUE
 );

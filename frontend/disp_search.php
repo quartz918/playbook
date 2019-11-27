@@ -20,6 +20,7 @@ include_once('content/search_page_num.php');
 <link rel="stylesheet" type="text/css" href="instruments_sty.css">
 <link rel="stylesheet" type="text/css" href="search_sty.css">
 <link rel="stylesheet" type="text/css" href="content_sty.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
 <div class="wrapper">

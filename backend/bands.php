@@ -1,11 +1,13 @@
 <?php
 include_once("functions.php");
 include_once ("following.php");
+include_once("band_structure.php");
 
 
 class band{    
     private $band_id;
     private $band_name;
+    private $band_voices;
     
     private $band_leader;
     private $band_members;
@@ -39,7 +41,9 @@ class band{
     public function get_band_id(){
         return $this->band_id;
     }
-    
+    public function get_band_voices(){
+        return $this->band_voices;
+    }
     
     /**
      * 
@@ -426,7 +430,7 @@ class band{
      * @throws Exception
      */
     public function check_if_leader($user_id){
-        global $db, $errors;
+        global $db;
         
         $user_id = e($user_id);
         $user_check_query = "SELECT leader FROM bands WHERE band_id = ".$this->band_id;
@@ -443,6 +447,50 @@ class band{
         
         return False;
     }
+    
+    public function get_band_structure(){
+        global $db;
+        $this->band_voices = array();
+        $user_check_query = "SELECT voice_id FROM band_voices WHERE band_id = ".$this->band_id;
+        try {
+            $result = mysqli_query($db, $user_check_query);
+        } catch(mysqli_sql_exception $ex){
+           throw new Exception("bands.php, check_if_leader" . $ex);
+        }
+        while($row = mysqli_fetch_array($result)){
+            $new_voice = new voice($row["voice_id"]);
+            array_push($this->band_voices, $new_voice);
+        }
+    }
+    
+    public function get_my_voices(){
+        $res = array();
+        $user_id = $_SESSION['user']['id'];
+        foreach($this->band_voices as $voice) {
+            
+            foreach($voice->get_instruments() as $instrument){
+                if($instrument->get_player_id() == $user_id){
+                    array_push($res, $voice);
+                    break;
+                }
+            }
+        }
+        return $res;
+    }    
+    public function get_my_applied_voices(){
+        $res = array();
+        $user_id = $_SESSION['user']['id'];
+        foreach($this->band_voices as $voice) {
+            
+            foreach($voice->get_instruments() as $instrument){
+                if($instrument->check_if_user_applied($user_id)){
+                    array_push($res, $voice);
+                    break;
+                }
+            }
+        }
+        return $res;
+    }                
     
     
 }

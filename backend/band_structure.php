@@ -1,7 +1,8 @@
 <?php
 
-function get_voices_by_bandid($band_id){
-}
+
+    
+
 
 class voice {
     private $voice_id;
@@ -17,6 +18,25 @@ class voice {
         $this->leader_id = get_voice_leader($voice_id);
         $this->leader_name = get_username_from_id($this->leader_id);
     }
+    public function get_voice_name(){
+        return $this->voice_name;
+    }
+    public function get_voice_id(){
+        return $this->voice_id;
+    }
+    public function get_instruments(){
+        return $this->instruments;
+    }
+    public function get_voice_leader_id(){
+        return $this->leader_id;
+    }
+    public function get_voice_leader_name(){
+        if(empty($this->leader_name)) {
+            return "empty";
+        } else {
+            return $this->leader_name;
+        }
+    }
 }
 
 
@@ -25,12 +45,69 @@ class instrument {
     private $inst_name;
     private $player_id;
     private $player_name;
+    private $applicants;
     
     public function __construct($inst_id){
         $this->inst_id = $inst_id;
         $this->inst_name = get_instname_by_instid($inst_id);
         $this->player_id = get_playerid_by_instid($inst_id);
         $this->player_name = get_username_from_id($this->player_id);
+    }
+    
+    public function get_inst_name(){
+        return $this->inst_name;
+    }
+    
+    public function get_player_name(){
+        if(!empty($this->player_name)){
+            return $this->player_name;
+        }
+        else {
+            return "empty";
+        }
+    }
+    public function get_player_id(){
+        return $this->player_id;
+    }
+    public function get_inst_id(){
+        return $this->inst_id;
+    }
+
+    public function get_applicants(){
+        $res = array();
+        global $db, $errors;
+        $user_check_query = "SELECT * FROM band_inst_apply INNER JOIN users ON band_inst_apply.player_id=users.id WHERE inst_id = ".$this->inst_id;
+        try {
+            $result = mysqli_query($db, $user_check_query);
+        } catch(mysqli_sql_exception $ex){
+           throw new Exception("band_structure.php, get applicants " . $ex);
+        }
+        while($row = mysqli_fetch_array($result)){
+            if($row['status']==1){
+                $user_id = $row['player_id'];
+                $user_name = $row['username'];
+                $status = checkIfFollowing($user_id);
+                array_push($res, ["user_id" => $user_id, "user_name" => $user_name, "status" => $status]);
+            }
+        }       
+    }
+    
+    public function check_if_user_applied($user_id){
+        global $db;
+        $user_check_query = "SELECT status FROM band_inst_apply WHERE player_id=".$user_id." AND inst_id=".$this->inst_id;
+        try {
+           $result = mysqli_query($db, $user_check_query);
+        } catch(mysqli_sql_exception $ex){
+            throw new Exception("band_structure.php, check if user applied " . $ex);
+        }
+        $row = mysqli_fetch_array($result);
+           
+        if((!empty($row)) && ($row['status'] ==1)){
+            return True;
+        }
+        else{            
+            return False;
+        }
     }
 }
 
@@ -39,7 +116,14 @@ class instrument {
 /* voice constructor functions *
  * *************************** *
  */            
-            
+
+/** Get the voice name from voice_id
+ * 
+ * @global type $db
+ * @param type $voice_id
+ * @return type
+ * @throws Exception
+ */
 function get_voicename_by_voiceid($voice_id){
     global $db;
     $user_check_query = "SELECT voice_name FROM band_voices WHERE voice_id = ".$voice_id;
@@ -92,3 +176,32 @@ function get_voice_leader($voice_id){
 /* instrument constructor functions *
  * ******************************** *
  */
+
+function get_instname_by_instid($inst_id){
+    global $db;
+    $user_check_query = "SELECT inst_name FROM band_inst WHERE inst_id = ".$inst_id;
+    try {
+        $result = mysqli_query($db, $user_check_query);
+    } catch(mysqli_sql_exception $ex){
+       throw new Exception("bands.php, check_if_member: Error while checking if user is member" . $ex);
+    }
+    $row = mysqli_fetch_array($result);
+    return $row['inst_name'];
+}
+
+function get_playerid_by_instid($inst_id) {
+    global $db;
+    $user_check_query = "SELECT player_id FROM band_inst WHERE inst_id = ".$inst_id;
+    try {
+        $result = mysqli_query($db, $user_check_query);
+    } catch(mysqli_sql_exception $ex){
+       throw new Exception("bands.php, check_if_member: Error while checking if user is member" . $ex);
+    }
+    $row = mysqli_fetch_array($result);
+    if(empty($row['player_id'])){
+        return null;
+    }
+    else {
+        return $row['player_id'];
+    }
+}
