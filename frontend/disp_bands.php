@@ -70,14 +70,30 @@ include_once('../backend/google_places_request.php');
             }
             else{
                 $i=0;
+                $voice = "voice".$i;
+                $voice_name = "".e($_POST[$voice]);
+                $voice_array = array();
+                while(e($_POST[$voice])!= null){
+                    array_push($voice_array, $voice_name);
+                    $i++;
+                    $voice = "voice".$i;
+                    $voice_name = "".e($_POST[$voice]);
+                }
+                
+                $i=0;
                 $instArray = array();
                 $instStr = "inst".$i;
                 $num_play_str = "num_inst".$i;
                 $voice_inst = "voice_inst".$i;
                 
-                while(!empty($_POST[$instStr])){                   
-                    $item = array("inst_name" => e($_POST[$instStr]), "num_player_inst"=> e($_POST[$num_play_str]), "voice_inst"=>e($_POST[$voice_inst]));
+                while(!empty($_POST[$instStr])){        
+                    $voice_num = e($_POST[$voice_inst]);
+                    $item = array("inst_name" => e($_POST[$instStr]), "num_player_inst"=> e($_POST[$num_play_str]), "voice_inst"=>$voice_num);
                     array_push($instArray, $item);
+                    if(empty($voice_array[$voice_num])){
+                        $voice_array[$voice_num] = e($_POST[$instStr]);
+                    }
+                        
                     $i++;
                     $instStr = "inst".$i;
                     $num_play_str = "num_inst".$i;
@@ -95,7 +111,7 @@ include_once('../backend/google_places_request.php');
                     
                 }
         
-                db_create_band($bandname,$instArray, $location);
+                db_create_band($bandname,$instArray, $voice_array, $location);
                 echo "You founded ".$bandname;
             }
         }

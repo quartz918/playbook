@@ -19,12 +19,13 @@
 
                                         </div>
                                 </div>
-                                <div class='fb-voice-label' id='fb-voice-label0'>Voice: 1</div> 
+                                <div class='fb-voice-label' id='fb-voice-label0'><input type='text' name='voice0' placeholder='voice name' class='voice-name'></div> 
                             </div></td><td>
                             <div class="fb-instrument-wrapper">    
                                 <div class="fb-instrument">
-                                    <input type='text' name='inst0' placeholder='instrument 0' class='instrument'>
-                                    <input type='number' name='num_inst0' class='num-inst'>
+                                    <table><tr><td>
+                                                <input type='text' name='inst0' placeholder='instrument 0' class='instrument'></td>
+                                            <td>&nbsp;&nbsp;&nbsp;number: &nbsp;</td><td><input type='number' name='num_inst0' class='num-inst' min='1'></td></tr></table>
                                     <input type='hidden' name='voice_inst0' value='0'>
 
                                 </div>
@@ -56,17 +57,17 @@
                                     <input type='button' class='add-inst-to-voice' name='add_inst_voice'" + j + " value='add another instrument to voice' onclick='addInstToVoice(" + j + ")'>\n\
                                 </div>\n\
                         </div>\n\
-                    <div class='fb-voice-label' id='fb-voice-label" + j +"'>Voice: " + (j+1) +"</div>\n\
+                    <div class='fb-voice-label' id='fb-voice-label" + j +"'><input type='text' name='voice" + (j) +"' placeholder='voice name' class='voice-name'></div>\n\
                 </div></td><td>\n\
                 <div class='fb-instrument-wrapper'> \n\
                 <div class='fb-instrument'>\n\
-                    <input type='text' name='inst" + i + "' placeholder='instrument "+ i +"' class='instrument'>\n\
-                    <input type='number' name='num_inst" + i + "' class='num-inst'>\n\
+                    <table><tr><td><input type='text' name='inst" + i + "' placeholder='instrument "+ i +"' class='instrument'><td>\n\
+                    <td>&nbsp;&nbsp;&nbsp;number: &nbsp;</td><td><input type='number' name='num_inst" + i + "' class='num-inst' min='1'></td></tr></table>\n\
                     <input type='hidden' name='voice_inst" + i + "' value='" + j + "'>"
                     
-                + "</div>\n\
-                <div id='addInstVoice" + j +"'></div>\n\
-                </div></td></tr></table>\n\
+                + "</div>" +
+                '<div id="addInstVoice' + j + '"></div>' +
+                "</div></td></tr></table>\n\
             </div>\n\
             <div id='addVoice'></div>";
                                     
@@ -90,8 +91,8 @@
         
         document.getElementById("addInstVoice"+k).outerHTML = 
         "<div class='fb-instrument'>\n\
-                    <input type='text' name='inst" + i + "' placeholder='instrument "+ i +"' class='instrument'>\n\
-                    <input type='number' name='num_inst" + i + "' class='num-inst'>\n\
+                    <table><tr><td><input type='text' name='inst" + i + "' placeholder='instrument "+ i +"' class='instrument'><td>\n\
+                    <td>&nbsp;&nbsp;&nbsp;number: &nbsp;</td><td><input type='number' name='num_inst" + i + "' class='num-inst' min='1'></td></tr></table>\n\
                     <input type='hidden' name='voice_inst" + i + "' value='" + k + "'>"
                     
                 + "</div>" +

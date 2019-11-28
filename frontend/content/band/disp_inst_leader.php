@@ -1,4 +1,35 @@
 <?php 
+if(isset($_POST["submit-new-voice"])){
+    
+    $voice_name = e($_POST["voice-name"]);
+    $voice_id = $my_band->add_voice($voice_name);
+    
+    $i=0;
+    $instArray = array();
+    $instStr = "inst".$i;
+    $num_play_str = "num_inst".$i;
+
+
+    while(!empty($_POST[$instStr])){                   
+        $inst_name = e($_POST[$instStr]);
+        $inst_num = e($_POST[$num_play_str]);
+               
+        $my_band->add_instrument($inst_name, $inst_num, $voice_id);
+        
+        $i++;
+        $instStr = "inst".$i;
+        $num_play_str = "num_inst".$i;
+    }
+}
+if(isset($_POST["submit-add-inst"])){
+    $voice_id = e($_POST["voice_id"]);
+    echo $voice_id;
+    $inst_name =e($_POST["inst-name"]);
+    
+        $my_band->add_instrument($inst_name, 1, $voice_id);
+    
+}
+
 
 
 ?>
@@ -45,9 +76,22 @@
             </div>    
         </div>
         <div class="enum-element">
-            <button class="add-voice-button" type="button" id="add-voice-button" data-modal="#addVoice">Add a voice</button>
+            <?php 
+            if($filter == "all" || $filter == "open"){
+                echo '<button class="add-voice-button" type="button" id="add-voice-button" data-modal="#addVoice" >Add a voice</button>';
+                include('content/band/add_voice_dialog.php');
+             ?>
             
-            <?php
+                <script>
+                    $("#add-voice-button").on("click", function() {
+                        var modal = $(this).data("modal");
+                        $(modal).show();
+                        console.log("test");
+                    });
+                </script>
+            <?php } 
+            
+            
                 include_once('content/disp_objects.php');
                 include_once('../backend/functions.php');
 
@@ -69,3 +113,4 @@
 </div>
        <?php    include('content/footer.php'); ?>
 </div>   
+

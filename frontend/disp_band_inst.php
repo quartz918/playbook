@@ -2,6 +2,7 @@
 include('../backend/check_if_logged_in.php');	
 include('../backend/set_band_var.php');
 include_once('content/disp_list_instruments.php');
+ 
 ?>
 <!DOCTYPE html>
 <html>

@@ -6,13 +6,13 @@ echo "<link rel='stylesheet' type='text/css' href='content/disp_objects_sty.css'
  * @param type $inst
  * @param type $opt available options: "loggedin", "loggedout", "member", "leader"
  */
-function disp_instrument($inst, $opt){   
+function disp_instrument($inst, $opt, $voice_id){   
     echo "<div class='inst-container'>";
     echo "<div class='inst-symbol'>";
     echo "<img src='../icons/default_inst.png' alt='inst_sym' class='inst-symbol-pic'>";   
     echo "</div>";
     echo "<div class='inst-name'>";
-    echo $inst->get_inst_name();    
+    echo "<a href='disp_band_spec_inst.php?inst_id=".$inst->get_inst_id()."&inst_name=".$inst->get_inst_name()."'>".$inst->get_inst_name()."</a>";    
     echo "</div>";
    
     
@@ -92,20 +92,34 @@ function disp_instrument($inst, $opt){
 
                }
             };
-            xhttp.open("GET", "jujoin.php?inst_id=" + inst_id + "&option=" + option, true);
+            xhttp.open("GET", "jujoin.php?inst_id=" + inst_id + "&option=" + option + "&voice_id=" + <?php echo $voice_id ?>, true);
             xhttp.send();
 
         }
     </script> <?php
 }
 
-function add_inst_to_voice_button(){
-    echo "<div id='new-inst-to-voice'></div>";
+function add_inst_to_voice_button($voice){
+    echo "<div id='new-inst-to-voice".$voice->get_voice_id()."'></div>";
     
     
     echo "<div class='inst-container'>";
     
-    echo '<button class="new-inst-to-voice-btn">Add instrument to voice</button>';
+    echo '<button class="new-inst-to-voice-btn" id="add-inst-to-voice'.$voice->get_voice_id().'" data-modal="#addInstToVoice">Add instrument to voice</button>';
+   
+    ?>   
+    <script>
+        $("#add-inst-to-voice" + <?php echo $voice->get_voice_id()?>).on("click", function() {
+            
+            var modal = $(this).data("modal");
+            var vn = '<?php echo $voice->get_voice_name(); ?>';
+            var x = <?php echo $voice->get_voice_id(); ?>;
+            $("#vcID").val(x);
+            $("#inst-voice-name").html(vn);
+            $(modal).show();
+        });
+    </script>
+    <?php 
     
     echo "</div>";
 }
@@ -118,13 +132,58 @@ function add_inst_to_voice_button(){
 function disp_voice($voice, $opt, $filter){
     echo "<div class='voice-container'>";
     echo "<div class='voice-header'>";
+    if($opt == "leader"){ 
+        echo "<button class='delete' id='delete-voice".$voice->get_voice_id()."' data-modal='#deleteVoice'><i class='material-icons'>delete</i></button>";
+        include('content/band/delete_voice_dialog.php');
+     ?>   
+        <script>
+            $("#delete-voice" + <?php echo $voice->get_voice_id()?>).on("click", function() {
+                var modal = $(this).data("modal");
+                var x = <?php echo $voice->get_voice_id(); ?>;
+                var vn = '<?php echo $voice->get_voice_name(); ?>';
+                $("#vcid-delete").val(x);
+                $("#instvn-delete").html(vn);
+                $(modal).show();
+              
+
+            });
+        </script>
+    <?php } 
     echo "<div class='voice-header-name'>";
-    echo $voice->get_voice_name().' <button class="voice-mod-prop" id="voice-mod-name'.$voice->get_voice_id().'"><i class="material-icons">create</i></button><br>';
+    echo "<span id='voice-name".$voice->get_voice_id()."'>".$voice->get_voice_name()."</span>"; 
+    if($opt == "leader"){ 
+        echo ' <button class="voice-mod-prop" id="voice-mod-name'.$voice->get_voice_id().'" data-modal="#changeVoiceName"><i class="material-icons">create</i></button>';
+        include('content/band/change_voice_name_dialog.php');
+    ?>   
+        <script>
+            $("#voice-mod-name" + <?php echo $voice->get_voice_id()?>).on("click", function() {
+                var modal = $(this).data("modal");
+                var x = <?php echo $voice->get_voice_id(); ?>;
+                $("#voice-id").val(x);
+                $(modal).show();
+              
+
+            });
+        </script>
+    <?php } 
     echo "</div>";
     
     if($opt == "leader" || $opt == "member"){
         echo "<div class='voice-header-leader'>";    
-        echo "First chair: ".$voice->get_voice_leader_name().' <button class="voice-mod-prop" id="voice-mod-leader'.$voice->get_voice_id().'"><i class="material-icons">create</i></button><br>';
+        echo "First chair: ".$voice->get_voice_leader_name();
+        if($opt == "leader") {
+            echo ' <button class="voice-mod-prop" id="voice-mod-leader'.$voice->get_voice_id().'" data-modal="#changeFirstChair"><i class="material-icons">create</i></button><br>';
+            include('content/band/change_first_chair_dialog.php');
+    ?>   
+            <script>
+                $("#voice-mod-leader" + <?php echo $voice->get_voice_id()?>).on("click", function() {
+                    var modal = $(this).data("modal");
+                    $(modal).show();
+             
+
+                });
+            </script>
+    <?php } 
         echo "</div>";
     }
     echo "</div>";
@@ -134,14 +193,14 @@ function disp_voice($voice, $opt, $filter){
     foreach($voice->get_instruments() as $inst){
         if($filter == "all"){
             echo "<div>";
-            disp_instrument($inst,$opt);
+            disp_instrument($inst,$opt, $voice->get_voice_id());
             echo "</div>";
         }
         
         elseif($filter =="open"){
             if($inst->get_player_id() == null){
                 echo "<div>";
-                disp_instrument($inst,$opt);
+                disp_instrument($inst,$opt, $voice->get_voice_id());
                 echo "</div>";
                 $open_spot_in_voice = 1;
             }
@@ -150,7 +209,7 @@ function disp_voice($voice, $opt, $filter){
         elseif($filter == "my"){   
             if($inst->get_player_id() == $_SESSION['user']['id']){
                 echo "<div>";
-                disp_instrument($inst,$opt);
+                disp_instrument($inst,$opt, $voice->get_voice_id());
                 echo "</div>";
             }
         }
@@ -158,7 +217,7 @@ function disp_voice($voice, $opt, $filter){
         elseif($filter == "applic"){   
             if($inst->check_if_user_applied($_SESSION['user']['id'])){
                 echo "<div>";
-                disp_instrument($inst,$opt);
+                disp_instrument($inst,$opt, $voice->get_voice_id());
                 echo "</div>";
             }
         }
@@ -172,7 +231,7 @@ function disp_voice($voice, $opt, $filter){
     }
     
     if(($filter == "all" || $filter == "open") && $opt=="leader"){
-        add_inst_to_voice_button();    
+        add_inst_to_voice_button($voice);    
     }
     echo "</div>";
 }
@@ -197,21 +256,13 @@ function disp_band($band, $opt, $filter){
         }
     }
     else {
-        if(empty($voices)){
-            echo '<form action="disp_sel_band.php?addInstrument=true" method="post">';
-            echo "<div class='add-inst-to-band-form'>";
-            echo "<input type='text' name='inst' placeholder='instrument' class='instrument'>";
-            echo "<input type='number' name='num_inst' class='num-inst'>";
-            echo '<input type="submit" name="fButton" class="found-band-btn" value="Add Instrument" id="fBandBtn">';
-            echo '</div>';
-            echo '</form> ';
-        }
-        else {
+        
             foreach($voices as $voice){
                 disp_voice($voice,$opt, $filter);
+                include('content/band/add_inst_to_voice_dialog.php');
             }
         }
-    }
+    
     echo "</div>";
 }
     

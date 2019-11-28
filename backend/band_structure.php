@@ -37,6 +37,17 @@ class voice {
             return $this->leader_name;
         }
     }
+    public function change_voice_name($name){
+        global $db;
+        $this->voice_name = $name;
+        $user_check_query = "UPDATE band_voices SET voice_name='".$this->voice_name."' WHERE voice_id=".$this->voice_id;
+        try {
+            mysqli_query($db, $user_check_query);
+        } catch(mysqli_sql_exception $ex){
+           throw new Exception("band_structure.php, get applicants " . $ex);
+        }
+        
+    }
 }
 
 
@@ -76,7 +87,7 @@ class instrument {
     public function get_applicants(){
         $res = array();
         global $db, $errors;
-        $user_check_query = "SELECT * FROM band_inst_apply INNER JOIN users ON band_inst_apply.player_id=users.id WHERE inst_id = ".$this->inst_id;
+        $user_check_query = "SELECT * FROM band_inst_apply INNER JOIN users ON band_inst_apply.player_id=users.id WHERE status=1 AND inst_id = ".$this->inst_id;
         try {
             $result = mysqli_query($db, $user_check_query);
         } catch(mysqli_sql_exception $ex){
@@ -87,9 +98,10 @@ class instrument {
                 $user_id = $row['player_id'];
                 $user_name = $row['username'];
                 $status = checkIfFollowing($user_id);
-                array_push($res, ["user_id" => $user_id, "user_name" => $user_name, "status" => $status]);
+                array_push($res, ["id" => $user_id, "username" => $user_name, "status" => $status]);
             }
-        }       
+        }
+        return $res;
     }
     
     public function check_if_user_applied($user_id){

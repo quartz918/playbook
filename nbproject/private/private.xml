@@ -3,16 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/ulysses/lab/musicdb/frontend/content/header_logged_in.php</file>
-            <file>file:/home/ulysses/lab/musicdb/frontend/content/disp_objects.php</file>
-            <file>file:/home/ulysses/lab/musicdb/frontend/content/disp_objects_sty.css</file>
-            <file>file:/home/ulysses/lab/musicdb/frontend/bands_sty.css</file>
-            <file>file:/home/ulysses/lab/musicdb/frontend/disp_bands.php</file>
-            <file>file:/home/ulysses/lab/musicdb/frontend/content/header.php</file>
-            <file>file:/home/ulysses/lab/musicdb/frontend/content/band/disp_inst_leader.php</file>
-            <file>file:/home/ulysses/lab/musicdb/frontend/content_sty.css</file>
+            <file>file:/home/ulysses/lab/musicdb/backend/band/accept_applicant.php</file>
+            <file>file:/home/ulysses/lab/musicdb/frontend/content/band_player_accept.php</file>
+            <file>file:/home/ulysses/lab/musicdb/backend/bands.php</file>
             <file>file:/home/ulysses/lab/musicdb/backend/band_structure.php</file>
-            <file>file:/home/ulysses/lab/musicdb/frontend/jujoin.php</file>
+            <file>file:/home/ulysses/lab/musicdb/frontend/content/disp_list_usr.php</file>
+            <file>file:/home/ulysses/lab/musicdb/frontend/content/band/disp_spec_inst_leader.php</file>
         </group>
     </open-files>
 </project-private>

@@ -42,7 +42,7 @@
         echo "</div>";
         /* show found user's list of instruments */
         echo "<div class='inst-list'>";
-        $instList = get_inst_user($userid);
+        
         echo "<ul>";
         foreach($instList as $item){
             echo "<li>".$item["inst"]."</li>";
@@ -61,7 +61,7 @@ function disp_list_applicants($applicants){
                 
                 
     foreach ($applicants as $item) {
-        $userid = $item["user_id"];
+        $userid = $item["id"];
 
         echo "<div class='enum-item'>";
         echo "<div class='enum-item-header'>";
@@ -71,10 +71,10 @@ function disp_list_applicants($applicants){
        
         echo "<div class='fu-follow' id='fufollow".$i."'>";
         if($item["status"] == 1){
-            echo "<button type='button' class='follow-btn' onclick='loadUFBtn(".$i.",".$item["user_id"].")'>Unfollow </button>";
+            echo "<button type='button' class='follow-btn' onclick='loadUFBtn(".$i.", ".$userid.")'>Unfollow </button>";
         }
         else{
-            echo "<button type='button' class='follow-btn' onclick='loadUFBtn(".$i.",".$item["user_id"].")'>Follow </button>";
+            echo "<button type='button' class='follow-btn' onclick='loadUFBtn(".$i.", ".$userid.")'>Follow </button>";
         }
         echo "</div>";
         ?>
@@ -101,13 +101,13 @@ function disp_list_applicants($applicants){
         echo "</div>";
         
         echo "<div class='player-accept' id='player-accept".$i."'>";
-        echo "<button type='button' class='follow-btn' onclick='accept(".$i.",".$item["user_id"].")'>Accept </button>";
+        echo "<button type='button' class='follow-btn' onclick='accept(".$i.",".$userid.")'>Accept </button>";
         echo "</div>";
         /* show found user's list of instruments */
         ?>
         <script>
             function accept(x, id){
-              
+              console.log(id);
               var xhttp = new XMLHttpRequest();
               xhttp.onreadystatechange = function(){
                  if (this.readyState == 4 && this.status == 200) {
@@ -115,7 +115,7 @@ function disp_list_applicants($applicants){
                     
                    }
                 };
-                xhttp.open("GET", "band_player_accept.php?uid=" + id + "&i=" + x, true);
+                xhttp.open("GET", "content/band_player_accept.php?uid=" + id + "&i=" + x, true);
                 xhttp.send();
                 
             }

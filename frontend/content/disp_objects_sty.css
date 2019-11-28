@@ -74,6 +74,7 @@ img {
 .voice-header-name{
     font-size: 20px;
     font-weight: bold;
+    display: inline-block;
 }
 .break {
   flex-basis: 100%;
@@ -102,4 +103,34 @@ img {
     background-color: white;
     border: none; 
     cursor: pointer;
+}
+
+.delete{
+    margin-right: 12px;
+    color: #aaa;
+    background-color: white;
+    border: none;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.delete:hover,
+.delete:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.voice-mod-prop{
+  color: #aaa;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.voice-mod-prop:hover,
+.voice-mod-prop:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
 }

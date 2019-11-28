@@ -7,6 +7,7 @@ if(isset($_GET['inst_id']) && isset($_GET['option'])){
 
     $inst_id=e($_GET['inst_id']);
     $option = e($_GET['option']);
+    $voice_id=e($_GET['voice_id']);
     $user_id = e($_SESSION['user']['id']);
     include('../backend/set_band_var.php');
     if($my_band->check_if_leader($user_id)){                            // neccessary in case js gets modified by user
@@ -27,7 +28,7 @@ if(isset($_GET['inst_id']) && isset($_GET['option'])){
     else {
         if(!($my_band->check_if_member_inst($user_id,$inst_id))){
             if($option == "a" && !$my_band->check_if_applied($user_id, $inst_id)){
-                $my_band->apply_inst($user_id,$inst_id);        
+                $my_band->apply_inst($user_id,$inst_id, $voice_id);        
                 echo "<button type='button' class='jujoin-btn' onclick='joinBand(".$inst_id.',"'."w".'"'.")'>Withdraw</button>";
             }
             elseif($option == "w" && $my_band->check_if_applied($user_id, $inst_id)){

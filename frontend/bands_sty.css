@@ -112,6 +112,7 @@
 }
 .fb-instrument{
     margin-bottom: 12px;
+    text-align: left;
 }
 input.band-name{
         float: left;
@@ -129,12 +130,13 @@ input.add-voice{
   display: none;
   position: absolute;
   background-color: white;
-  min-width: 160px;
+  min-width: 200px;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
   margin-top: 24px;
   padding: 0;
   z-index: 1;
 }
+
 
 .fb-inst-drop{
     float: left;
@@ -179,7 +181,9 @@ input.add-voice{
     text-align: left;
     
 }
-
+.num-inst{
+    width: 80px;
+}
 input.fb-inst-drop-btn{
     background: url(../icons/input.png) no-repeat;
     background-color: white;
@@ -196,13 +200,13 @@ input.add-inst-to-voice{
     background: none;
     border: none;
     height: 30px;
-    width: 220px;
+    width: 250px;
     cursor: pointer
 }
 
 input.add-inst-to-voice:hover{
-    color: white;
-    background-color: darkslategrey;
+    color: var(--on-top-color);
+    background-color: var(--header-footer-color);
 }
 
 .add-voice-button{
@@ -225,4 +229,10 @@ input.add-inst-to-voice:hover{
 
 
      color: var(--header-footer-color)
+   }
+   
+   .add-new-voice-title{
+       font-size: 24px;
+       font-weight: bold;
+       margin-bottom: 50px;
    }

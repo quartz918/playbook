@@ -17,8 +17,8 @@ body {
 
 }
 .content {
-    min-width: var(--min-width);
-    max-width: var(--std-width);
+   
+    width: var(--std-width);
     height: 100%;
     margin: auto;
     
@@ -43,7 +43,7 @@ body {
 
 .modal{
   display: none; /* Hidden by default */
-  position: absolute;
+  position: fixed;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
@@ -71,6 +71,15 @@ body {
     margin: auto;
     
 }
+.modal-content{
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 12px;
+  border: 1px solid #888;
+  width: 100%; /* Could be more or less, depending on screen size */
+  height: 100%;
+}
+
 .pic_upload{
   font-size: 1em;
   background-color: #fefefe;

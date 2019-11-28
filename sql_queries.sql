@@ -108,8 +108,8 @@ CREATE TABLE event_attend(
 DESCRIBE band_inst;
 DROP TABLE band_members;
 
-ALTER TABLE instruments 
-	DROP FOREIGN KEY user_id;
+ALTER TABLE band_inst_apply 
+	ADD COLUMN voice_id INT;
 
 SHOW COLUMNS FROM bands;
 
@@ -134,3 +134,10 @@ REPLACE INTO TABLE instruments
 LINES STARTING BY '"' TERMINATED BY '"\n';
 
 INSERT INTO band_inst (inst_name, band_id, inst_part) VALUES ('as', 6, 1), ('fd', 6, 1), ('as', 6, 1);
+
+
+
+SET FOREIGN_KEY_CHECKS = 0; 
+DELETE FROM band_inst WHERE voice_id = 1; 
+DELETE FROM band_voices WHERE voice_id = 1; 
+SET FOREIGN_KEY_CHECKS = 1;
