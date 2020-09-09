@@ -129,7 +129,7 @@ SET FOREIGN_KEY_CHECKS = 1;
 TRUNCATE TABLE bands;
 DROP TABLE instruments;
 
-LOAD DATA LOCAL INFILE '/home/ulysses/lab/musicdb/misc/inst_adj.txt' 
+LOAD DATA LOCAL INFILE '' 
 REPLACE INTO TABLE instruments 
 LINES STARTING BY '"' TERMINATED BY '"\n';
 
